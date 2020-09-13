@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+
 class Mail:
     data = {
         "sender": "",
@@ -10,7 +13,7 @@ class Mail:
 
     def __init__(self, src_json=None):
         if src_json == None:
-            self.data["received_at"] = int(datetime.datetime.now().timestamp())
+            self.data["received_at"] = int(datetime.now().timestamp())
         else:
             self.data = json.loads(src_json)
 
