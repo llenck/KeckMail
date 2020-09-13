@@ -12,4 +12,3 @@ try:
     loop.run_forever()
 except:
     print("\nBye!")
-    pass
