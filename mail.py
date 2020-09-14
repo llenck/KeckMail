@@ -16,5 +16,5 @@ class Mail:
         else:
             self.data = json.loads(src_json)
 
-    def serialize():
+    def serialize(self):
         return json.dumps(json.dumps(self.data))

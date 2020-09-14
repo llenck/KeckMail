@@ -4,7 +4,7 @@ import traceback
 
 import config
 from mail import Mail
-from handlers import handlers
+from handlers import call_handler
 from connection_state import ConnectionState
 from exceptions import *
 
@@ -41,7 +41,7 @@ async def client_loop(r, w):
             else:
                 command_name = buf.split(b" ")[0].strip(b"\r\n\t")
 
-                resp = handlers[command_name](state, buf)
+                resp = call_handler(state, buf, command_name)
 
             # immediately push the answer to the client, as it would have to wait
             # for it before sending more commands
@@ -56,7 +56,14 @@ async def client_loop(r, w):
         print("Client disconnected")
 
     except Exception as e:
-        print("Disconnected abruptly: %s" % traceback.format_exc(e))
+        # traceback is dumb and will sometimes cause exceptions
+        try:
+            print("Disconnected abruptly: %s" % traceback.format_exc(e))
+        except Exception:
+            print("Disconnected abruplty: %s" % repr(e))
+            pass
 
     w.close()
     await w.wait_closed()
+
+    print("Received an email: %s" % state.mail.serialize())

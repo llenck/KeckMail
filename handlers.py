@@ -24,16 +24,16 @@ def data_handler(state, command):
     print("set m_command to b\"\" and next_m_handler to %s" % \
         state.next_multiline_handler)
 
-    return "354 End data with <CR><LF>.<CR><LF>"
+    return "354 Gib Daten"
 
-def data_finish_handler(state, command):
-    state.mail.data["content"] = command
+def data_finish_handler(state, line):
+    state.mail.data["content"] = line
 
     return "250 ok boomer"
 
-def rctp_handler(state, command):
+def rctp_handler(state, line):
     try:
-        receiver = command.split(b"<")[1].split(b">")[0]
+        receiver = line.split(b"<")[1].split(b">")[0]
 
         if state.mail.data["receiver"] != "":
             print("Warning: client send multiple recipients, discarding" + \
@@ -45,11 +45,22 @@ def rctp_handler(state, command):
     except IndexError:
         raise QuitException("500 Willst du nen Kek in deinen Arsch?")
 
+def quit_handler(state, line)
+    raise QuitException("221 GKYS")
+
 handlers = {
     b"HELO": helo_handler,
     b"EHLO": ehlo_handler,
     b"MAIL": mail_handler,
     b"DATA": data_handler,
     b"data_finish": data_finish_handler,
-    b"RCPT": rctp_handler
+    b"RCPT": rctp_handler,
+    b"QUIT": quit_handler
 }
+
+def call_handler(state, line, cmd):
+    try:
+        return handlers[cmd](state, line)
+
+    except KeyError:
+        return "502 idk bout %s, is it something edible?" % str(cmd, encoding="ascii")
