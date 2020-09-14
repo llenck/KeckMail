@@ -1,6 +1,7 @@
 import config
 from exceptions import QuitException
 from connection_state import ConnectionState
+from mail import Mail
 
 
 def helo_handler(state, command):
