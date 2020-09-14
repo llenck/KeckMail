@@ -26,6 +26,9 @@ async def client_loop(r, w):
             # if we're building a multi-line command and we're not yet done, don't call
             # any handlers
             if not state.multiline_command == None and not buf == b".\r\n":
+                if len(state.multiline_command) + len(buf) > config.max_size:
+                    raise QuitException("500 onii-chan, there's no way this will fit")
+
                 state.multiline_command += buf
                 continue
 

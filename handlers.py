@@ -45,8 +45,15 @@ def rctp_handler(state, line):
     except IndexError:
         raise QuitException("500 Willst du nen Kek in deinen Arsch?")
 
-def quit_handler(state, line)
-    raise QuitException("221 GKYS")
+def quit_handler(state, line):
+    raise QuitException("221 go fuckyourself")
+
+def noop_handler(state, line):
+    return "250 ok boomer"
+
+def rset_handler(state, line):
+    state.mail = Mail()
+    return "250 y tho"
 
 handlers = {
     b"HELO": helo_handler,
@@ -55,7 +62,8 @@ handlers = {
     b"DATA": data_handler,
     b"data_finish": data_finish_handler,
     b"RCPT": rctp_handler,
-    b"QUIT": quit_handler
+    b"QUIT": quit_handler,
+    b"RSET": rset_handler,
 }
 
 def call_handler(state, line, cmd):
