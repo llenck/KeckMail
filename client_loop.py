@@ -13,7 +13,7 @@ async def client_loop(r, w):
 
     state = ConnectionState()
 
-    w.write(bytes("220 %s ESMTP KeckMail\r\n" % config.domain, encoding="ascii"))
+    w.write(bytes("220 %s ESMTP KeckMail\r\n" % config.domain, encoding="utf-8"))
     await w.drain()
 
     try:
@@ -48,11 +48,11 @@ async def client_loop(r, w):
 
             # immediately push the answer to the client, as it would have to wait
             # for it before sending more commands
-            w.write(bytes(resp + "\r\n", encoding="ascii"))
+            w.write(bytes(resp + "\r\n", encoding="utf-8"))
             await w.drain()
 
     except QuitException as e:
-        w.write(bytes(e.message + "\r\n", encoding="ascii"))
+        w.write(bytes(e.message + "\r\n", encoding="utf-8"))
         await w.drain()
 
     except IncompleteReadError:

@@ -9,7 +9,8 @@ def helo_handler(state, command):
 
 def ehlo_handler(state, command):
     return "250-%s, at your service uwu\r\n" % config.domain + \
-           "250 SIZE %d" % config.max_size
+           "250-SIZE %d" % config.max_size + \
+           "250 SMTPUTF8"
 
 def mail_handler(state, command):
     try:
@@ -40,7 +41,7 @@ def rctp_handler(state, line):
             print("Warning: client send multiple recipients, discarding" +
                   "the old one (%s)" % state.mail.data["receiver"])
 
-        state.mail.data["receiver"] = str(receiver, encoding="ascii")
+        state.mail.data["receiver"] = str(receiver, encoding="utf-8")
         return "250 OK BOOMER"
 
     except IndexError:
@@ -76,4 +77,4 @@ def call_handler(state, line, cmd):
         return handlers[cmd](state, line)
 
     except KeyError:
-        return "502 idk bout %s, is it something edible?" % str(cmd, encoding="ascii")
+        return "502 idk bout %s, is it something edible?" % str(cmd, encoding="utf-8")
