@@ -6,6 +6,7 @@ import config
 from mail import Mail
 from handlers import handlers
 from connection_state import ConnectionState
+from exceptions import *
 
 async def client_loop(r, w):
     print("Client connected")
@@ -24,7 +25,7 @@ async def client_loop(r, w):
 
             # if we're building a multi-line command and we're not yet done, don't call
             # any handlers
-            if not state.multiline_command == None and not buf == ".":
+            if not state.multiline_command == None and not buf == b".\r\n":
                 state.multiline_command += buf
                 continue
 
@@ -38,7 +39,7 @@ async def client_loop(r, w):
 
             # otherwise just call a handler based on the first word of buf
             else:
-                command_name = buf.split(b" ")[0]
+                command_name = buf.split(b" ")[0].strip(b"\r\n\t")
 
                 resp = handlers[command_name](state, buf)
 
@@ -47,10 +48,15 @@ async def client_loop(r, w):
             w.write(bytes(resp + "\r\n", encoding="ascii"))
             await w.drain()
 
-            multiline_command = None # clear the current multiline command, if any
+    except QuitException as e:
+        w.write(bytes(e.message + "\r\n", encoding="ascii"))
+        await w.drain()
 
     except IncompleteReadError:
         print("Client disconnected")
 
     except Exception as e:
         print("Disconnected abruptly: %s" % traceback.format_exc(e))
+
+    w.close()
+    await w.wait_closed()
