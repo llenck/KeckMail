@@ -9,13 +9,13 @@ def helo_handler(state, command):
 
 def ehlo_handler(state, command):
     return "250-%s, at your service uwu\r\n" % config.domain + \
-           "250-SIZE %d" % config.max_size + \
+           "250-SIZE %d\r\n" % config.max_size + \
            "250 SMTPUTF8"
 
 def mail_handler(state, command):
     try:
         sender = command.split(b"<")[1].split(b">")[0]
-        state.mail.data["sender"] = sender
+        state.mail.data["sender"] = str(sender, encoding="utf-8")
         return "250 OK BOOMER"
 
     except IndexError:

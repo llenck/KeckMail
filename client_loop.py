@@ -7,6 +7,7 @@ from mail import Mail
 from handlers import call_handler
 from connection_state import ConnectionState
 from exceptions import *
+from save_mail import try_save_mail
 
 async def client_loop(r, w):
     print("Client connected")
@@ -63,10 +64,11 @@ async def client_loop(r, w):
         try:
             print("Disconnected abruptly: %s" % traceback.format_exc(e))
         except Exception:
-            print("Disconnected abruplty: %s" % repr(e))
+            print("Disconnected abruptly: %s" % repr(e))
             pass
 
     w.close()
     await w.wait_closed()
 
     print("Received an email: %s" % state.mail.serialize())
+    try_save_mail(state.mail)
