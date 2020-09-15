@@ -24,13 +24,11 @@ def mail_handler(state, command):
 def data_handler(state, command):
     state.multiline_command = b""
     state.next_multiline_handler = b"data_finish"
-    print("set m_command to b\"\" and next_m_handler to %s" %
-          state.next_multiline_handler)
 
     return "354 Gib Daten"
 
 def data_finish_handler(state, line):
-    state.mail.data["content"] = line
+    state.mail.data["content"] = str(line, encoding="utf-8")
     return "250 ok boomer"
 
 def rctp_handler(state, line):

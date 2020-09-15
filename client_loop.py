@@ -34,8 +34,8 @@ async def client_loop(r, w):
 
             # if we just got the last part of a multi-line command, call a handler
             elif not state.multiline_command == None:
-                resp = handlers[state.next_multiline_handler](state,
-                    state.multiline_command)
+                resp = call_handler(state,
+                    state.multiline_command, state.next_multiline_handler)
 
                 state.multiline_command = None
                 state.next_multiline_handler = None
