@@ -5,7 +5,7 @@ from datetime import datetime
 import config
 from mail import Mail
 
-def save_mail(mail):
+async def save_mail(mail):
     prefix = config.fs_prefix + "/" + quote(mail.data["receiver"], safe="")
     
     time = datetime.utcfromtimestamp(mail.data["received_at"])

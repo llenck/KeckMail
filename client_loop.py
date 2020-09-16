@@ -71,4 +71,4 @@ async def client_loop(r, w):
     await w.wait_closed()
 
     print("Received an email: %s" % state.mail.serialize())
-    try_save_mail(state.mail)
+    await try_save_mail(state.mail)

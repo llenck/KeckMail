@@ -8,10 +8,5 @@ db = motor_client["KeckMailDB"]
 dbcol_mails = db["mails"]
 
 async def save_mail(mail):
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(insert_mail(mail))
-
-
-async def insert_mail(mail):
     result = await dbcol_mails.insert_one(mail)
     print('result %s' % repr(result.inserted_id))
