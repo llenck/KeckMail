@@ -8,5 +8,5 @@ db = motor_client["KeckMailDB"]
 dbcol_mails = db["mails"]
 
 async def save_mail(mail):
-    result = await dbcol_mails.insert_one(mail)
+    result = await dbcol_mails.insert_one(mail.data)
     print('result %s' % repr(result.inserted_id))
